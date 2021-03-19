@@ -11,6 +11,5 @@ gcc sudoku.c -o sudoku
 
 Demo
 
-
-https://user-images.githubusercontent.com/59663573/111752767-c702ec80-889e-11eb-954c-88e191090a57.mov
+![sudoku demo](https://user-images.githubusercontent.com/59663573/111753205-442e6180-889f-11eb-9b5b-3acfc5066247.gif)
 
