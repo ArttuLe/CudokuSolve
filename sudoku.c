@@ -7,7 +7,7 @@
 
 
 void print_board(int board[N][N]);
-bool is_valid_num(int board[N][N], int *row, int *col, int num);
+bool is_valid_num(int board[N][N], int row, int col, int num);
 bool find_empty_cell(int board[N][N],int *row ,int *col);
 bool solve(int board[N][N]);
 
@@ -60,9 +60,11 @@ int main(){
 }
 //Loops through the sudoku grid and looks for empty cells ie. checks for completion of the sudoku
 bool find_empty_cell(int board[N][N],int *row ,int *col){
-    for(*row = 0;*row < N;row++){
-       for(*col = 0;*col < N;col++){
-         if(board[*row][*col] == UNASSIGNED){
+    for(int i = 0;i < N;i++){
+       for(int j = 0;j < N;j++){
+         if(board[i][j] == UNASSIGNED){
+           *row = i;
+           *col = j;
            printf("Empty cell found..\n");
            return true;
          }
@@ -75,25 +77,22 @@ bool find_empty_cell(int board[N][N],int *row ,int *col){
 
 //Checks that the number is valid and there will be no duplicates in the same grid,row,col
 //the num and location of the num in the board(row,col) are given as parameters
-bool is_valid_num(int board[N][N], int *row, int *col, int num){
-    int r = *row - *row % 3;
-    int c = *col - *col % 3;
+bool is_valid_num(int board[N][N], int row, int col, int num){
+    int r = row/3*3;
+    int c = col/3*3;
     printf("%d and %d\n", r, c);
-     //check the row, returns false if duplicate found
+     //check the col and row, returns false if duplicate found
      for(int i = 0;i < N; i++){
-       if(board[*row][i] == num){
+       if(board[row][i] == num){
          printf("Duplicate found in the same row!\n");
          return false;
        }
-     }
-
-     //check the columns, returns false if duplicate found
-     for(int j = 0;j < N; j++){
-       if(board[j][*col] == num){
+       if(board[i][col] == num){
          printf("Duplicate found in the same column!\n");
          return false;
        }
      }
+
 
      //check the 3x3 sub-grids for duplicates
      for(int a = r; a < r+3;a++){
@@ -124,16 +123,14 @@ bool solve(int board[N][N]){
     for(int num = 1; num <= 9; num++){
 
       //If number is valid -> assign in cell and call solve on the new board...
-      if(is_valid_num(board,&row,&col, num) == true){
+      if(is_valid_num(board,row,col, num) == true){
         printf("Assigning value %d to grid location %d x %d\n", num, row, col);
-        board[row][col] = num; //segmentation faultings?????
-        //print_board(board);
+        board[row][col] = num;
         if(solve(board)){
           return true;
         }
         else{
           board[row][col] = UNASSIGNED;
-          //print??
         }
       }
     }
