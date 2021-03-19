@@ -1,5 +1,6 @@
 #include<stdio.h>
 #include <stdbool.h>
+#include <unistd.h>
 
 
 #define N 9
@@ -37,20 +38,9 @@ int main(){
     7 9 3  5 1 2  8 6 4
     6 1 4  8 9 7  2 3 5
 */
-
-  printf("     _____           _       _          _____       _                       \n");
-  printf("    /  ___|         | |     | |        /  ___|     | |                      \n");
-  printf("    \\ `--. _   _  __| | ___ | | ___   _\\ `--.  ___ | |_   _____           \n");
-  printf("     `--. \\ | | |/ _` |/ _ \\| |/ / | | |`--. \\/ _ \\| \\ \\ / / _ \\     \n");
-  printf("    /\\__/ / |_| | (_| | (_) |   <| |_| /\\__/ / (_) | |\\ V /  __/         \n");
-  printf("    \\____/ \\__,_|\\__,_|\\___/|_|\\_\\\\__,_\\____/ \\___/|_| \\_/ \\___|  \n");
-  printf("                                                                            \n");
-  printf("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n");
-
-  printf("_______________________________\n");
   print_board(sudoku);
-  printf("-------------------------------\n");
-  if(solve(sudoku) == true){
+
+  if(solve(sudoku)){
     print_board(sudoku);
   }
   else{
@@ -58,6 +48,8 @@ int main(){
   }
   return 0;
 }
+
+
 //Loops through the sudoku grid and looks for empty cells ie. checks for completion of the sudoku
 bool find_empty_cell(int board[N][N],int *row ,int *col){
     for(int i = 0;i < N;i++){
@@ -65,13 +57,13 @@ bool find_empty_cell(int board[N][N],int *row ,int *col){
          if(board[i][j] == UNASSIGNED){
            *row = i;
            *col = j;
-           printf("Empty cell found..\n");
+           // printf("Empty cell found..\n");
            return true;
          }
        }
      }
   //Returns false if no empty cells were found
-  printf("No empty cells found, exiting...\n");
+  printf("\nNo empty cells found, exiting...\n");
   return false;
 }
 
@@ -80,15 +72,12 @@ bool find_empty_cell(int board[N][N],int *row ,int *col){
 bool is_valid_num(int board[N][N], int row, int col, int num){
     int r = row/3*3;
     int c = col/3*3;
-    printf("%d and %d\n", r, c);
      //check the col and row, returns false if duplicate found
      for(int i = 0;i < N; i++){
        if(board[row][i] == num){
-         printf("Duplicate found in the same row!\n");
          return false;
        }
        if(board[i][col] == num){
-         printf("Duplicate found in the same column!\n");
          return false;
        }
      }
@@ -98,12 +87,10 @@ bool is_valid_num(int board[N][N], int row, int col, int num){
      for(int a = r; a < r+3;a++){
        for(int b = c; b < c+3;b++){
          if(board[a][b] == num){
-           printf("Duplicate found in the same 3x3 grid!\n");
            return false;
          }
        }
      }
-printf("no duplicates found...\n");
 return true;
 }
 
@@ -125,6 +112,9 @@ bool solve(int board[N][N]){
       //If number is valid -> assign in cell and call solve on the new board...
       if(is_valid_num(board,row,col, num) == true){
         printf("Assigning value %d to grid location %d x %d\n", num, row, col);
+        printf("\33c\e[3J");//clears the screen so the sudoku "updates" on top of the earlier one.
+        print_board(board);
+        usleep(50000);
         board[row][col] = num;
         if(solve(board)){
           return true;
@@ -139,7 +129,16 @@ bool solve(int board[N][N]){
 
 
 void print_board(int board[N][N]){
+  printf("     _____           _       _          _____       _                       \n");
+  printf("    /  ___|         | |     | |        /  ___|     | |                      \n");
+  printf("    \\ `--. _   _  __| | ___ | | ___   _\\ `--.  ___ | |_   _____           \n");
+  printf("     `--. \\ | | |/ _` |/ _ \\| |/ / | | |`--. \\/ _ \\| \\ \\ / / _ \\     \n");
+  printf("    /\\__/ / |_| | (_| | (_) |   <| |_| /\\__/ / (_) | |\\ V /  __/         \n");
+  printf("    \\____/ \\__,_|\\__,_|\\___/|_|\\_\\\\__,_\\____/ \\___/|_| \\_/ \\___|  \n");
+  printf("                                                                            \n");
+  printf("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n");
 
+    printf("_______________________________\n");
     for(int i = 0;i < 9;i++){
       if(i == 3 || i == 6){
         printf("+---------+---------+---------+\n");
@@ -155,5 +154,6 @@ void print_board(int board[N][N]){
       }
       printf("\n");
     }
+      printf("-------------------------------\n");
 
 }
